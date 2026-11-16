@@ -25,6 +25,9 @@ SYSTEM_PROMPT = """You triage damage reports from a scooter street team.
 Reports can be in Polish, German or English and are often short and messy.
 Write the summary in English, max 15 words.
 
+Set language to the language of the report: pl, de or en. Use mixed when report uses more than one language.
+
+
 Priority rules:
 - P1: safety risk (brakes, steering, handlebar, broken frame, damaged or hot battery)
 - P2: vehicle cannot be rented (display, lock, no connection, flat tyre)
@@ -52,8 +55,10 @@ SCHEMA = {
             "enum": ["pull_from_street", "repair_on_street", "next_scheduled_visit"],
         },
         "summary": {"type": "string"},
+        "language": {"type": "string", "enum": ["pl", "de", "en", "mixed"]},
+
     },
-    "required": ["vehicle_id", "category", "priority", "action", "summary"],
+    "required": ["vehicle_id", "category", "priority", "action", "summary", "language"],
     "additionalProperties": False,
 }
 
@@ -82,10 +87,10 @@ def classify(report: str) -> dict:
         f"~${cost:.5f} stop={response.stop_reason}",
         file=sys.stderr,
     )
-    return json.loads(text)
+    return json.loads(text), cost,
 
 
 if __name__ == "__main__":
     report = " ".join(sys.argv[1:]) or "SC-1003 hamulec tylny prawie nie działa, klient zgłosił w apce"
-    result = classify(report)
+    result, cost = classify(report)
     print(json.dumps(result, indent=2, ensure_ascii=False))
