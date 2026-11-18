@@ -1,0 +1,16 @@
+vehicle_id,model,zone,battery_pct,status,last_report
+SC-1001,Model A,Schwabing,82,available,
+SC-1002,Model A,Schwabing,14,low_battery,
+SC-1003,Model B,Schwabing,55,damaged,rear brake weak
+SC-1004,Model B,Schwabing,9,low_battery,
+SC-1005,Model A,Maxvorstadt,67,available,
+SC-1006,Model A,Maxvorstadt,31,damaged,display flickers
+SC-1007,Model B,Maxvorstadt,18,low_battery,
+SC-1008,Model B,Altstadt,90,available,
+SC-1009,Model A,Altstadt,47,damaged,handlebar loose
+SC-1010,Model A,Altstadt,6,low_battery,
+SC-1011,Model B,Sendling,73,available,
+SC-1012,Model B,Sendling,0,in_warehouse,waiting for battery swap
+SC-1013,Model A,Sendling,25,available,
+SC-1014,Model A,Bogenhausen,61,damaged,scratched deck
+SC-1015,Model B,Bogenhausen,12,low_battery,
