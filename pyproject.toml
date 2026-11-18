@@ -1,7 +1,7 @@
 [project]
 name = "fleet-ai-lab"
 version = "0.1.0"
-description = "Add your description here"
+description = "Learning projects: LLM triage, a tool-using agent, an MCP server, a Claude Skill and an n8n workflow for a fictional scooter fleet"
 readme = "README.md"
 authors = [
     { name = "Blazej Osinski", email = "163443870+OsinskiB@users.noreply.github.com" }

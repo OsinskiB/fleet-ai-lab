@@ -1,10 +1,10 @@
 P1|SC-1009 Lenker wackelt stark
 P2|SC-1006 display dead, cannot start ride
 P3|SC-1014 rysy na podeście
-P2|SC-nie pamietam bateria śmierdzi
+P1|SC-nie pamietam bateria śmierdzi
 P1|gabel wackelt
-P2|sc-2512 display scratches
-P3|SC-3526 Loose brake cable
-P3|SC-2727 Brak baterii
+P3|sc-2512 display scratches
+P1|SC-3526 Loose brake cable
+P2|SC-2727 Brak baterii
 P1|SC6781 The battery cover is missing
-P2| dummy report
+P2|SC-1011 Schloss klemmt, Ausleihe nicht möglich
