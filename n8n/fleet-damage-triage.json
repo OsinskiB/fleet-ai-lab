@@ -1,0 +1,244 @@
+{
+  "name": "Fleet damage triage",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Zgłoszenie usterki",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Vehicle ID"
+            },
+            {
+              "fieldLabel": "Description",
+              "fieldType": "textarea"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        0
+      ],
+      "id": "bdc5d4ad-0638-43f9-ae64-7de3ebed5493",
+      "name": "On form submission",
+      "webhookId": "bca76da8-84d3-4aa1-a18c-64f0560d21c2"
+    },
+    {
+      "parameters": {
+        "text": "=Vehicle: {{ $json['Vehicle ID'] }}\nReport: {{ $json.Description }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "vehicle_id",
+              "description": "Vehicle ID like SC-1003. Use \"unknown\" if missing.",
+              "required": true
+            },
+            {
+              "name": "category",
+              "description": "One of: brakes, battery, electronics, frame, lock, tyre, cosmetic, other.",
+              "required": true
+            },
+            {
+              "name": "priority",
+              "description": "P1 = safety risk (brakes, steering, handlebar, frame, battery). P2 = cannot be rented. P3 = cosmetic.",
+              "required": true
+            },
+            {
+              "name": "action",
+              "description": "P1: pull_from_street. P2: repair_on_street or pull_from_street. P3: next_scheduled_visit.",
+              "required": true
+            },
+            {
+              "name": "summary",
+              "description": "English, max 15 words.",
+              "required": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "298cefca-765a-44db-852e-dcd7064f0a5c",
+      "name": "Information Extractor"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-haiku-5-5",
+          "mode": "list",
+          "cachedResultName": "Claude Haiku 5.5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.6,
+      "position": [
+        160,
+        208
+      ],
+      "id": "be158d1e-cf10-4a00-ae58-8246476ba5db",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "yLcOTbz8XUvN4Pou",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "WxPcqYmpoDcdVThv",
+          "mode": "list",
+          "cachedResultName": "damage_reports",
+          "cachedResultUrl": "/projects/GHn7hKiqihKPeBFb/datatables/WxPcqYmpoDcdVThv"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "vehicle_id": "{{ $json.output.vehicle_id }}",
+            "category": "={{ $json.output.category }}",
+            "priority": "={{ $json.output.priority }}",
+            "action": "={{ $json.output.action }}",
+            "summary": "={{ $json.output.summary }}",
+            "raw_report": "={{ $('On form submission').item.json.Description }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "vehicle_id",
+              "displayName": "vehicle_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "action",
+              "displayName": "action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "raw_report",
+              "displayName": "raw_report",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        384,
+        0
+      ],
+      "id": "5b97c55a-6cfe-4397-8f7c-5cd3da8d6fc1",
+      "name": "Insert row"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c4edc661-b9cb-4dea-b420-d09e5b371657",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5a08c240a4ed6a7a1aecb34c07ab550a885c801e6baf9450b14b7480ff2447eb"
+  },
+  "nodeGroups": [],
+  "id": "A55lU6rIT8svGdtX",
+  "tags": []
+}
